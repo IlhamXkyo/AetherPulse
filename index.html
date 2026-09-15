@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AetherPulse // Interactive 3D Generative Particle Symphony</title>
+  <meta name="description" content="An interactive 3D generative particle physics and procedural spatial soundscape ecosystem powered by Three.js and Web Audio API." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <!-- Three.js and OrbitControls from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <!-- Audio Start Overlay (needed for Web Audio browser policy) -->
+  <div id="audio-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-badge">NEURAL LINK // V1.0</div>
+      <h1 class="glitch" data-text="AETHER PULSE">AETHER PULSE</h1>
+      <p class="modal-desc">
+        Experience a living 3D particle universe synchronized with real-time generative spatial audio.
+        Interact with gravity fields, trigger shockwaves, and manipulate quantum chaos.
+      </p>
+      <div class="modal-specs">
+        <span><i class="dot"></i> WebGL 3D Particles</span>
+        <span><i class="dot"></i> Procedural Web Audio Synth</span>
+        <span><i class="dot"></i> Dynamic Chaos Physics</span>
+      </div>
+      <button id="btn-enter" class="cyber-btn primary">
+        <span>INITIALIZE SYSTEM [START]</span>
+        <div class="btn-glow"></div>
+      </button>
+      <div class="modal-hint">Headphones recommended for spatial audio immersion</div>
+    </div>
+  </div>
+
+  <!-- Cyberpunk Top HUD -->
+  <header class="hud-top">
+    <div class="hud-brand">
+      <div class="status-indicator live"></div>
+      <div class="brand-text">
+        <span class="system-title">AETHER<span class="highlight">PULSE</span></span>
+        <span class="system-sub">QUANTUM PARTICLE // SOUNDSCAPE MATRIX</span>
+      </div>
+    </div>
+
+    <!-- Telemetry Bar -->
+    <div class="hud-telemetry">
+      <div class="telemetry-item">
+        <span class="label">FPS</span>
+        <span id="stat-fps" class="value">60</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="label">PARTICLES</span>
+        <span id="stat-particles" class="value">65,536</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="label">CHAOS INDEX</span>
+        <span id="stat-chaos" class="value">1.42</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="label">SCALE</span>
+        <span id="stat-scale" class="value">DORIAN</span>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="hud-actions">
+      <button id="btn-audio-toggle" class="icon-btn active" title="Toggle Sound Synth">
+        <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zm-2.5 9.77l-4.5-4H3v6h4l4.5 4v-6z"/></svg>
+      </button>
+      <button id="btn-screenshot" class="icon-btn" title="Capture High-Res Image">
+        <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+      </button>
+      <button id="btn-fullscreen" class="icon-btn" title="Toggle Fullscreen">
+        <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Floating Control Deck -->
+  <aside class="hud-deck">
+    <div class="deck-header">
+      <span class="deck-title">CORE PROTOCOL</span>
+      <button id="btn-collapse-deck" class="deck-toggle" title="Collapse Deck">_</button>
+    </div>
+
+    <div class="deck-body">
+      <!-- Simulation Modes -->
+      <div class="control-group">
+        <label class="group-label">SIMULATION ARCHETYPE</label>
+        <div class="mode-grid">
+          <button class="mode-btn active" data-mode="singularity">
+            <span class="mode-icon">✦</span>
+            <span class="mode-name">Singularity</span>
+          </button>
+          <button class="mode-btn" data-mode="attractor">
+            <span class="mode-icon">☍</span>
+            <span class="mode-name">Aizawa Chaos</span>
+          </button>
+          <button class="mode-btn" data-mode="swarm">
+            <span class="mode-icon">𖣯</span>
+            <span class="mode-name">Neural Swarm</span>
+          </button>
+          <button class="mode-btn" data-mode="lattice">
+            <span class="mode-icon">⬡</span>
+            <span class="mode-name">Cyber Lattice</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div class="control-group">
+        <label class="group-label">EXPEDITION PRESETS</label>
+        <div class="preset-pills">
+          <button class="preset-pill" data-preset="supernova">Supernova</button>
+          <button class="preset-pill" data-preset="deepzen">Deep Zen</button>
+          <button class="preset-pill" data-preset="cyberstorm">Cyber Storm</button>
+          <button class="preset-pill" data-preset="abyss">Void Abyss</button>
+        </div>
+      </div>
+
+      <!-- Sliders -->
+      <div class="control-group">
+        <div class="slider-row">
+          <span class="slider-label">Flow Speed</span>
+          <span id="val-speed" class="slider-val">1.0x</span>
+        </div>
+        <input id="slider-speed" type="range" min="0.1" max="3.0" step="0.05" value="1.0" class="cyber-slider">
+      </div>
+
+      <div class="control-group">
+        <div class="slider-row">
+          <span class="slider-label">Particle Density</span>
+          <span id="val-density" class="slider-val">Medium</span>
+        </div>
+        <input id="slider-density" type="range" min="1" max="3" step="1" value="2" class="cyber-slider">
+      </div>
+
+      <div class="control-group">
+        <div class="slider-row">
+          <span class="slider-label">Gravitational Pull</span>
+          <span id="val-gravity" class="slider-val">1.2</span>
+        </div>
+        <input id="slider-gravity" type="range" min="-3.0" max="3.0" step="0.1" value="1.2" class="cyber-slider">
+      </div>
+
+      <div class="control-group">
+        <div class="slider-row">
+          <span class="slider-label">Color Shift Palette</span>
+        </div>
+        <div class="palette-picker">
+          <button class="palette-swatch active" data-palette="cyberpunk" style="--c1: #ff007f; --c2: #00f0ff;"></button>
+          <button class="palette-swatch" data-palette="biolum" style="--c1: #00ff88; --c2: #00bfff;"></button>
+          <button class="palette-swatch" data-palette="solar" style="--c1: #ff4500; --c2: #ffd700;"></button>
+          <button class="palette-swatch" data-palette="spectral" style="--c1: #a855f7; --c2: #ec4899;"></button>
+          <button class="palette-swatch" data-palette="matrix" style="--c1: #00ff41; --c2: #03a062;"></button>
+        </div>
+      </div>
+
+      <!-- Sound Engine Controls -->
+      <div class="control-group">
+        <div class="slider-row">
+          <span class="slider-label">Audio Synth Space</span>
+          <span id="val-audio-reverb" class="slider-val">65%</span>
+        </div>
+        <input id="slider-audio-reverb" type="range" min="0" max="1" step="0.05" value="0.65" class="cyber-slider">
+      </div>
+
+      <!-- Shockwave Trigger -->
+      <div class="control-group action-buttons">
+        <button id="btn-shockwave" class="cyber-btn pulse-glow">
+          <span>TRIGGER QUANTUM PULSE [SPACE]</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Interactive Cursor Guide Overlay -->
+  <div class="hud-interaction-guide">
+    <span><kbd>Left Click + Drag</kbd> Orbit View</span>
+    <span><kbd>Right Click / [Hold]</kbd> Gravity Gun</span>
+    <span><kbd>Scroll</kbd> Zoom</span>
+    <span><kbd>Spacebar</kbd> Pulse</span>
+  </div>
+
+  <!-- Bottom Audio Oscilloscope & Frequency Visualizer -->
+  <footer class="hud-bottom">
+    <div class="oscilloscope-container">
+      <div class="osc-label">SYNTH HARMONIC SPECTRUM</div>
+      <canvas id="osc-canvas" width="280" height="40"></canvas>
+    </div>
+    <div class="hud-credits">
+      <span>AETHERPULSE // ARCHITECTED BY <a href="https://github.com/IlhamXkyo" target="_blank">IlhamXkyo</a></span>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div id="hud-toast" class="hud-toast"></div>
+
+  <script src="audioEngine.js"></script>
+  <script src="simulation.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
