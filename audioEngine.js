@@ -44,10 +44,13 @@ class AudioEngine {
 
     // Reverb Impulse Generator
     this.reverbNode = await this.createConvolverReverb(2.5, 2.0);
+    this.reverbGain = this.ctx.createGain();
+    this.reverbGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
 
     // Connect nodes: Synth -> Filter -> Reverb / Master -> Analyser -> Output
     this.filter.connect(this.masterGain);
-    this.reverbNode.connect(this.masterGain);
+    this.reverbNode.connect(this.reverbGain);
+    this.reverbGain.connect(this.masterGain);
     this.masterGain.connect(this.analyser);
     this.analyser.connect(this.ctx.destination);
 
@@ -214,9 +217,9 @@ class AudioEngine {
   }
 
   setReverbWet(amount) {
-    if (!this.reverbNode || !this.ctx) return;
-    // Amount between 0 and 1
-    // Handled in audio graph
+    if (!this.reverbGain || !this.ctx) return;
+    const clamped = Math.max(0, Math.min(1, amount));
+    this.reverbGain.gain.setTargetAtTime(clamped, this.ctx.currentTime, 0.05);
   }
 
   toggleMute() {
