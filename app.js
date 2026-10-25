@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statFps = document.getElementById('stat-fps');
   const statParticles = document.getElementById('stat-particles');
   const statChaos = document.getElementById('stat-chaos');
+  const statMode = document.getElementById('stat-mode');
 
   // Sliders
   const sliderSpeed = document.getElementById('slider-speed');
@@ -44,15 +45,29 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('NEURAL AUDIO MATRIX ENGAGED');
   });
 
+  // Fallback resume AudioContext on first canvas interaction if user dismissed modal
+  container.addEventListener('pointerdown', () => {
+    audio.resumeIfSuspended();
+  }, { once: true });
+
   // Mode Selection
   const modeButtons = document.querySelectorAll('.mode-btn');
+
+  function activateMode(modeName) {
+    modeButtons.forEach((b) => {
+      b.classList.toggle('active', b.dataset.mode === modeName);
+    });
+    sim.setSimulationMode(modeName);
+    if (statMode) {
+      statMode.textContent = modeName.toUpperCase();
+    }
+    showToast(`ARCHETYPE: ${modeName.toUpperCase()}`);
+  }
+
   modeButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      modeButtons.forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
       const mode = btn.dataset.mode;
-      sim.setSimulationMode(mode);
-      showToast(`ARCHETYPE: ${mode.toUpperCase()}`);
+      activateMode(mode);
     });
   });
 
@@ -68,28 +83,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyPreset(name) {
     if (name === 'supernova') {
-      sim.setSimulationMode('singularity');
+      activateMode('singularity');
       sim.setPalette('solar');
       sim.speed = 1.8;
       sliderSpeed.value = 1.8;
       valSpeed.textContent = '1.8x';
       sim.triggerShockwave(1.5);
     } else if (name === 'deepzen') {
-      sim.setSimulationMode('swarm');
+      activateMode('swarm');
       sim.setPalette('biolum');
       sim.speed = 0.5;
       sliderSpeed.value = 0.5;
       valSpeed.textContent = '0.5x';
     } else if (name === 'cyberstorm') {
-      sim.setSimulationMode('attractor');
+      activateMode('aizawa');
       sim.setPalette('cyberpunk');
       sim.speed = 1.4;
       sliderSpeed.value = 1.4;
       valSpeed.textContent = '1.4x';
       sim.triggerShockwave(1.2);
-    } else if (name === 'abyss') {
-      sim.setSimulationMode('lattice');
+    } else if (name === 'lorenzflow') {
+      activateMode('lorenz');
       sim.setPalette('spectral');
+      sim.speed = 1.2;
+      sliderSpeed.value = 1.2;
+      valSpeed.textContent = '1.2x';
+      sim.triggerShockwave(1.0);
+    } else if (name === 'rosslerwave') {
+      activateMode('rossler');
+      sim.setPalette('biolum');
+      sim.speed = 1.1;
+      sliderSpeed.value = 1.1;
+      valSpeed.textContent = '1.1x';
+    } else if (name === 'abyss') {
+      activateMode('lattice');
+      sim.setPalette('matrix');
       sim.speed = 0.8;
       sliderSpeed.value = 0.8;
       valSpeed.textContent = '0.8x';
@@ -104,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   sliderDensity.addEventListener('input', (e) => {
-    const level = parseInt(e.target.value);
+    const level = parseInt(e.target.value, 10);
     sim.setParticleDensity(level);
     const labels = { 1: 'Low (32k)', 2: 'Medium (65k)', 3: 'High (98k)' };
     valDensity.textContent = labels[level];
@@ -136,17 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Shockwave Pulse Button & Key
+  // Shockwave Pulse Button
   btnShockwave.addEventListener('click', () => {
     sim.triggerShockwave(1.2);
     showToast('QUANTUM PULSE FIRED');
-  });
-
-  window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space') {
-      e.preventDefault();
-      sim.triggerShockwave(1.2);
-    }
   });
 
   // Deck Toggle
@@ -163,8 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // High-Res Screenshot Capture
-  btnScreenshot.addEventListener('click', () => {
-    // Render one crisp frame
+  function captureScreenshot() {
     sim.renderer.render(sim.scene, sim.camera);
     const dataUrl = sim.renderer.domElement.toDataURL('image/png');
     const a = document.createElement('a');
@@ -174,14 +194,52 @@ document.addEventListener('DOMContentLoaded', () => {
     a.click();
     document.body.removeChild(a);
     showToast('HQ SCREENSHOT CAPTURED');
-  });
+  }
 
-  // Fullscreen
-  btnFullscreen.addEventListener('click', () => {
+  btnScreenshot.addEventListener('click', captureScreenshot);
+
+  // Fullscreen Toggle
+  function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
     } else {
       document.exitFullscreen().catch(() => {});
+    }
+  }
+
+  btnFullscreen.addEventListener('click', toggleFullscreen);
+
+  // Keyboard Shortcuts
+  window.addEventListener('keydown', (e) => {
+    // Avoid triggering when focused in an input
+    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      sim.triggerShockwave(1.2);
+    } else if (e.code === 'KeyM') {
+      const active = audio.toggleMute();
+      btnAudioToggle.classList.toggle('active', active);
+      showToast(active ? 'AUDIO SYNTH UNMUTED' : 'AUDIO SYNTH MUTED');
+    } else if (e.code === 'KeyF') {
+      toggleFullscreen();
+    } else if (e.code === 'KeyS') {
+      captureScreenshot();
+    } else if (e.code === 'KeyP') {
+      sim.triggerShockwave(1.2);
+      showToast('QUANTUM PULSE FIRED');
+    } else if (['Digit1', 'Numpad1'].includes(e.code)) {
+      activateMode('singularity');
+    } else if (['Digit2', 'Numpad2'].includes(e.code)) {
+      activateMode('aizawa');
+    } else if (['Digit3', 'Numpad3'].includes(e.code)) {
+      activateMode('lorenz');
+    } else if (['Digit4', 'Numpad4'].includes(e.code)) {
+      activateMode('rossler');
+    } else if (['Digit5', 'Numpad5'].includes(e.code)) {
+      activateMode('swarm');
+    } else if (['Digit6', 'Numpad6'].includes(e.code)) {
+      activateMode('lattice');
     }
   });
 
@@ -217,16 +275,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const x = i * barWidth;
         const y = oscCanvas.height - h;
 
-        oscCtx.fillStyle = `hsl(${180 + i * 2}, 100%, ${50 + val * 20}%)`;
+        oscCtx.fillStyle = `hsl(${180 + i * 2.2}, 100%, ${50 + val * 25}%)`;
         oscCtx.fillRect(x, y, barWidth - 1, h);
       }
     } else {
-      // Idle wave
-      oscCtx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+      // Idle harmonic sine wave
+      oscCtx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
+      oscCtx.lineWidth = 1.5;
       oscCtx.beginPath();
       oscCtx.moveTo(0, oscCanvas.height / 2);
-      for (let x = 0; x < oscCanvas.width; x += 10) {
-        const y = oscCanvas.height / 2 + Math.sin(x * 0.05 + performance.now() * 0.003) * 3;
+      for (let x = 0; x < oscCanvas.width; x += 8) {
+        const y = oscCanvas.height / 2 + Math.sin(x * 0.05 + performance.now() * 0.003) * 3.5;
         oscCtx.lineTo(x, y);
       }
       oscCtx.stroke();

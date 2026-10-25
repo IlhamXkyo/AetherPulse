@@ -19,16 +19,16 @@
   <!-- Audio Start Overlay (needed for Web Audio browser policy) -->
   <div id="audio-modal" class="modal-overlay">
     <div class="modal-card">
-      <div class="modal-badge">NEURAL LINK // V1.0</div>
+      <div class="modal-badge">NEURAL LINK // V1.1</div>
       <h1 class="glitch" data-text="AETHER PULSE">AETHER PULSE</h1>
       <p class="modal-desc">
         Experience a living 3D particle universe synchronized with real-time generative spatial audio.
-        Interact with gravity fields, trigger shockwaves, and manipulate quantum chaos.
+        Interact with gravity fields, trigger shockwaves, and manipulate quantum chaos attractors.
       </p>
       <div class="modal-specs">
         <span><i class="dot"></i> WebGL 3D Particles</span>
+        <span><i class="dot"></i> Strange Attractors (Lorenz, Aizawa, Rössler)</span>
         <span><i class="dot"></i> Procedural Web Audio Synth</span>
-        <span><i class="dot"></i> Dynamic Chaos Physics</span>
       </div>
       <button id="btn-enter" class="cyber-btn primary">
         <span>INITIALIZE SYSTEM [START]</span>
@@ -63,20 +63,20 @@
         <span id="stat-chaos" class="value">1.42</span>
       </div>
       <div class="telemetry-item">
-        <span class="label">SCALE</span>
-        <span id="stat-scale" class="value">DORIAN</span>
+        <span class="label">ARCHETYPE</span>
+        <span id="stat-mode" class="value">SINGULARITY</span>
       </div>
     </div>
 
     <!-- Header Actions -->
     <div class="hud-actions">
-      <button id="btn-audio-toggle" class="icon-btn active" title="Toggle Sound Synth">
+      <button id="btn-audio-toggle" class="icon-btn active" title="Toggle Sound Synth [M]">
         <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zm-2.5 9.77l-4.5-4H3v6h4l4.5 4v-6z"/></svg>
       </button>
-      <button id="btn-screenshot" class="icon-btn" title="Capture High-Res Image">
+      <button id="btn-screenshot" class="icon-btn" title="Capture High-Res Image [S]">
         <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
       </button>
-      <button id="btn-fullscreen" class="icon-btn" title="Toggle Fullscreen">
+      <button id="btn-fullscreen" class="icon-btn" title="Toggle Fullscreen [F]">
         <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
       </button>
     </div>
@@ -92,15 +92,23 @@
     <div class="deck-body">
       <!-- Simulation Modes -->
       <div class="control-group">
-        <label class="group-label">SIMULATION ARCHETYPE</label>
+        <label class="group-label">SIMULATION ARCHETYPE [KEYS 1-6]</label>
         <div class="mode-grid">
           <button class="mode-btn active" data-mode="singularity">
             <span class="mode-icon">✦</span>
             <span class="mode-name">Singularity</span>
           </button>
-          <button class="mode-btn" data-mode="attractor">
+          <button class="mode-btn" data-mode="aizawa">
             <span class="mode-icon">☍</span>
             <span class="mode-name">Aizawa Chaos</span>
+          </button>
+          <button class="mode-btn" data-mode="lorenz">
+            <span class="mode-icon">🦋</span>
+            <span class="mode-name">Lorenz Butterfly</span>
+          </button>
+          <button class="mode-btn" data-mode="rossler">
+            <span class="mode-icon">🌀</span>
+            <span class="mode-name">Rössler Spiral</span>
           </button>
           <button class="mode-btn" data-mode="swarm">
             <span class="mode-icon">𖣯</span>
@@ -120,6 +128,8 @@
           <button class="preset-pill" data-preset="supernova">Supernova</button>
           <button class="preset-pill" data-preset="deepzen">Deep Zen</button>
           <button class="preset-pill" data-preset="cyberstorm">Cyber Storm</button>
+          <button class="preset-pill" data-preset="lorenzflow">Lorenz Flow</button>
+          <button class="preset-pill" data-preset="rosslerwave">Rössler Wave</button>
           <button class="preset-pill" data-preset="abyss">Void Abyss</button>
         </div>
       </div>
@@ -166,9 +176,9 @@
       <div class="control-group">
         <div class="slider-row">
           <span class="slider-label">Audio Synth Space</span>
-          <span id="val-audio-reverb" class="slider-val">65%</span>
+          <span id="val-audio-reverb" class="slider-val">45%</span>
         </div>
-        <input id="slider-audio-reverb" type="range" min="0" max="1" step="0.05" value="0.65" class="cyber-slider">
+        <input id="slider-audio-reverb" type="range" min="0" max="1" step="0.05" value="0.45" class="cyber-slider">
       </div>
 
       <!-- Shockwave Trigger -->
@@ -183,9 +193,11 @@
   <!-- Interactive Cursor Guide Overlay -->
   <div class="hud-interaction-guide">
     <span><kbd>Left Click + Drag</kbd> Orbit View</span>
-    <span><kbd>Right Click / [Hold]</kbd> Gravity Gun</span>
+    <span><kbd>Right Click</kbd> Repel Gravity</span>
+    <span><kbd>Shift + Click</kbd> Attract Gravity</span>
     <span><kbd>Scroll</kbd> Zoom</span>
     <span><kbd>Spacebar</kbd> Pulse</span>
+    <span><kbd>1-6</kbd> Archetypes</span>
   </div>
 
   <!-- Bottom Audio Oscilloscope & Frequency Visualizer -->

@@ -1,0 +1,25 @@
+{
+  "name": "aetherpulse",
+  "version": "1.1.0",
+  "description": "Interactive 3D Generative Particle Symphony & Procedural Spatial Audio Sandbox built with Three.js & Web Audio API",
+  "main": "app.js",
+  "scripts": {
+    "test": "node test/simulation.test.js",
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "threejs",
+    "webgl",
+    "web-audio-api",
+    "generative-art",
+    "particles",
+    "strange-attractors",
+    "lorenz-attractor",
+    "aizawa-attractor",
+    "rossler-attractor",
+    "spatial-audio",
+    "cyberpunk"
+  ],
+  "author": "IlhamXkyo",
+  "license": "MIT"
+}
