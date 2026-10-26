@@ -104,7 +104,7 @@ describe('AetherPulse Chaotic Attractors & Physics Math', () => {
   });
 
   test('AudioEngine D Dorian scale frequencies match musical equal temperament', () => {
-    const AudioEngine = require('../audioEngine.js');
+    const AudioEngine = require('../js/audioEngine.js');
     const engine = new AudioEngine();
 
     assert.ok(Array.isArray(engine.scale));

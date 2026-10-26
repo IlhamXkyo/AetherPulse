@@ -2,7 +2,7 @@
   "name": "aetherpulse",
   "version": "1.1.0",
   "description": "Interactive 3D Generative Particle Symphony & Procedural Spatial Audio Sandbox built with Three.js & Web Audio API",
-  "main": "app.js",
+  "main": "js/app.js",
   "scripts": {
     "test": "node test/simulation.test.js",
     "start": "npx serve ."
